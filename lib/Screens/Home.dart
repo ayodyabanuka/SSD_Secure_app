@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:ssd_secure_app/Screens/AddUser.dart';
+import 'package:ssd_secure_app/Screens/Files.dart';
+import 'package:ssd_secure_app/Screens/Messagers.dart';
+import 'package:ssd_secure_app/Screens/Profile.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Widgets/CustomAppbar.dart';
 import 'package:ssd_secure_app/Widgets/CustomCardButton.dart';
@@ -40,7 +43,10 @@ class _HomeState extends State<Home> {
                 CustomCardButton(
                   text: "Messages",
                   icon: Icons.message,
-                  function: () {},
+                  function: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Messages()));
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -48,7 +54,10 @@ class _HomeState extends State<Home> {
                 CustomCardButton(
                   text: "Files",
                   icon: Icons.file_copy,
-                  function: () {},
+                  function: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Files()));
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -67,7 +76,10 @@ class _HomeState extends State<Home> {
                 CustomCardButton(
                   text: "Profile",
                   icon: Icons.person,
-                  function: () {},
+                  function: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile()));
+                  },
                 )
               ],
             ),

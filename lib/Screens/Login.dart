@@ -13,12 +13,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
   @override
   void dispose() {
-    username.dispose();
+    email.dispose();
     password.dispose();
     super.dispose();
   }
@@ -46,8 +46,8 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Customtextfield(
-                  lable: "Username",
-                  controller: username,
+                  lable: "Email",
+                  controller: email,
                   isPassword: false,
                 ),
                 const SizedBox(
@@ -60,9 +60,9 @@ class _LoginState extends State<Login> {
           ),
           CustomButton(
             function: () {
-              if (username.value.text.isNotEmpty &&
+              if (email.value.text.isNotEmpty &&
                   password.value.text.isNotEmpty) {
-                if (username.text == "admin") {
+                if (email.text == "admin") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -73,7 +73,7 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
-                if (username.text == "worker") {
+                if (email.text == "worker") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
-                if (username.text == "manager") {
+                if (email.text == "manager") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -95,7 +95,6 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
-                ;
               } else {
                 null;
               }
