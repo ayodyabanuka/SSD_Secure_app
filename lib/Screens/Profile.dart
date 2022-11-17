@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ssd_secure_app/Models/UserModel.dart';
 import 'package:ssd_secure_app/Screens/EditProfile.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
+import 'package:ssd_secure_app/sharedPrefs.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -11,6 +13,20 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  User user = User(id: '', email: '', type: '', username: '');
+  @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
+
+  getUserDetails() async {
+    User userPrefs = User.fromJson(await SharedPref.readObject('User'));
+    setState(() {
+      user = userPrefs;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,126 +49,54 @@ class _ProfileState extends State<Profile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "User Name",
-              style: TextStyle(color: Colors.black, fontSize: 10),
+              "Username",
+              style: TextStyle(color: Colors.black, fontSize: 18),
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            const Text(
-              "John Doe",
-              style: TextStyle(color: Colors.black, fontSize: 14),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            const Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey,
+            const SizedBox(height: 5),
+            Text(
+              user.username,
+              style: const TextStyle(color: Colors.black, fontSize: 20),
             ),
             const SizedBox(
               height: 25,
             ),
             const Text(
-              "Address",
-              style: TextStyle(color: Colors.black, fontSize: 10),
+              "Email",
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              user.email,
+              style: const TextStyle(color: Colors.black, fontSize: 20),
             ),
             const SizedBox(
-              height: 5,
+              height: 25,
             ),
             const Text(
-              "J43A, Wellawatta ,Colombo",
-              style: TextStyle(color: Colors.black, fontSize: 14),
+              "User Role",
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              user.type,
+              style: const TextStyle(color: Colors.black, fontSize: 20),
             ),
             const SizedBox(
               height: 25,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "City",
-                        style: TextStyle(color: Colors.black, fontSize: 10),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        "Colombo",
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Post Code",
-                        style: TextStyle(color: Colors.black, fontSize: 10),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        "10500",
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Email",
-                  style: TextStyle(color: Colors.black, fontSize: 10),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "johndoe@gmail.com",
-                  style: TextStyle(color: Colors.black, fontSize: 14),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Phone Number",
-                  style: TextStyle(color: Colors.black, fontSize: 10),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "+94 71 234 5678",
-                  style: TextStyle(color: Colors.black, fontSize: 14),
-                ),
-              ],
             ),
             const SizedBox(
               height: 65,
             ),
             CustomButton(
               function: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditProfile()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfile(
+                      user: user,
+                    ),
+                  ),
+                );
               },
               text: "Edit",
             )

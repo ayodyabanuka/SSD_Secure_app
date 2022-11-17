@@ -50,79 +50,69 @@ class _FilesState extends State<Files> {
         child: Column(
           children: [
             Expanded(
-                child: FutureBuilder<List<FilesModel>>(
-                    future: fileList,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: Text("Loading..."),
-                        );
-                      } else {
-                        return ListView.separated(
-                          itemCount: snapshot.data.length,
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const Divider(
-                            thickness: 1,
-                            height: 1,
-                            color: Color.fromARGB(255, 204, 204, 204),
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
+              child: FutureBuilder<List<FilesModel>>(
+                future: fileList,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text("Loading..."),
+                    );
+                  } else {
+                    return ListView.separated(
+                      itemCount: snapshot.data.length,
+                      separatorBuilder: (BuildContext context, int index) => const Divider(
+                        thickness: 1,
+                        height: 1,
+                        color: Color.fromARGB(255, 204, 204, 204),
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            "File Name",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 10),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            snapshot.data[index].filename,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14),
-                                          ),
-                                        ],
+                                      const Text(
+                                        "File Name",
+                                        style: TextStyle(color: Colors.black, fontSize: 10),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          downloadFile(
-                                              snapshot.data[index].filename);
-                                        },
-                                        child: Container(
-                                          margin: const EdgeInsets.all(5),
-                                          width: 40,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                              color: apppurple,
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: const Icon(Icons.download),
-                                        ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        snapshot.data[index].filename,
+                                        style: const TextStyle(color: Colors.black, fontSize: 14),
                                       ),
                                     ],
                                   ),
+                                  InkWell(
+                                    onTap: () {
+                                      downloadFile(snapshot.data[index].filename);
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5),
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                                      child: const Icon(Icons.download),
+                                    ),
+                                  ),
                                 ],
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         );
-                      }
-                    })),
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
             const SizedBox(
               height: 20,
             ),
@@ -134,9 +124,7 @@ class _FilesState extends State<Files> {
                     margin: const EdgeInsets.all(5),
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
-                        color: apppurple,
-                        borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
                     child: const Icon(Icons.attach_file),
                   ),
                 ),
@@ -150,9 +138,7 @@ class _FilesState extends State<Files> {
                     margin: const EdgeInsets.all(5),
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
-                        color: apppurple,
-                        borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
                     child: const Icon(Icons.send),
                   ),
                 ),
@@ -179,21 +165,17 @@ class _FilesState extends State<Files> {
         //output:  /storage/emulated/0/Download/banner.png
 
         try {
-          await Dio().download(
-              "https://ssd-mobile-application.herokuapp.com/api/files/$filename",
-              savePath, onReceiveProgress: (received, total) {
+          await Dio().download("https://ssd-mobile-application.herokuapp.com/api/files/$filename", savePath, onReceiveProgress: (received, total) {
             if (total != -1) {
               print((received / total * 100).toStringAsFixed(0) + "%");
               //you can build progressbar feature too
             }
           });
-          ScaffoldMessenger.of(context)
-              .showSnackBar(successSnackBar(Constants.successfuldownload));
+          ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfuldownload));
           print("File is saved to download folder.");
         } on DioError catch (e) {
           print(e.message);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(errorSnackBar(Constants.jasonResponseError));
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
         }
       }
     } else {

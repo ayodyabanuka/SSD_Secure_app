@@ -53,23 +53,22 @@ class _LoginState extends State<Login> {
                   controller: email,
                   isPassword: false,
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Customtextfield(
-                    lable: "Password", controller: password, isPassword: true)
+                  lable: "Password",
+                  controller: password,
+                  isPassword: true,
+                ),
+                Customtextfield(lable: "Password", controller: password, isPassword: true)
               ],
             ),
           ),
           CustomButton(
             function: () {
-              if (email.value.text.isNotEmpty &&
-                  password.value.text.isNotEmpty) {
-                Provider.of<AuthProvider>(context, listen: false)
-                    .userLogin(context, email.value.text, password.value.text);
+              if (email.value.text.isNotEmpty && password.value.text.isNotEmpty) {
+                Provider.of<AuthProvider>(context, listen: false).userLogin(context, email.value.text, password.value.text);
               } else {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(errorSnackBar(Constants.fieldEmpty));
+                ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
               }
             },
             text: "Next",

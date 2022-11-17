@@ -1,54 +1,67 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ssd_secure_app/Models/UserModel.dart';
+import 'package:ssd_secure_app/Providers/AuthProvider.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
-import 'package:ssd_secure_app/Utils/textSize.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
+import 'package:ssd_secure_app/Widgets/snack_bar.dart';
+import 'package:ssd_secure_app/constants.dart';
 
 class EditProfile extends StatefulWidget {
-  EditProfile({Key key}) : super(key: key);
+  final User user;
+
+  const EditProfile({Key key, this.user}) : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 
-const List<String> worker = <String>[
-  'Worker',
-  'Manager',
-];
-
 class _EditProfileState extends State<EditProfile> {
+  User user;
+  TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
-  TextEditingController adderss = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController postCode = TextEditingController();
-  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  @override
+  void initState() {
+    user = widget.user;
+    username.text = user.username;
+    email.text = user.email;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    String dropdownValue = worker.first;
     return Scaffold(
       backgroundColor: bcColor,
       appBar: AppBar(
-        toolbarHeight: 110,
-        backgroundColor: bcColor,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
-        title: const Text(
-          "Register Staff",
-          style: TitleStyle,
-        ),
         elevation: 0,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        backgroundColor: bcColor,
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Customtextfield(
+                isPassword: false,
+                lable: "Username",
+                controller: username,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Customtextfield(
               isPassword: false,
               lable: "Email",
@@ -58,42 +71,19 @@ class _EditProfileState extends State<EditProfile> {
               height: 20,
             ),
             Customtextfield(
-              isPassword: false,
-              lable: "Address",
-              controller: adderss,
+              isPassword: true,
+              lable: "Password",
+              controller: password,
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "City",
-              controller: city,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "Post Code",
-              controller: postCode,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "Phone Number",
-              controller: phoneNumber,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             CustomButton(
-              function: () {},
+              function: () {
+                if (username.text.isEmpty || email.text.isEmpty || password.text.isEmpty) {
+                  Provider.of<AuthProvider>(context, listen: false).updateUser(context, username.text, email.text, password.text);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
+                }
+              },
               text: "Update",
             )
           ],

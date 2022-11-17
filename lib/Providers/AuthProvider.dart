@@ -148,14 +148,12 @@ class AuthProvider extends ChangeNotifier {
     String username,
     String email,
     String password,
-    String type,
   ) async {
     String userToken = await SharedPref.readString('userToken');
     Map<String, dynamic> body = {
       "username": username,
       "email": email,
       "password": password,
-      "type": type,
     };
     try {
       final response = await http.put(
@@ -168,6 +166,8 @@ class AuthProvider extends ChangeNotifier {
       );
       switch (response.statusCode) {
         case 200:
+          userAuth(context);
+          Navigator.pushNamedAndRemoveUntil(context, "/ProfileScreen", (Route<dynamic> route) => false);
           notifyListeners();
           break;
         default:

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ssd_secure_app/Models/MessageModel.dart';
+import 'package:ssd_secure_app/Providers/MessageProvider.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 
 class Messages extends StatefulWidget {
@@ -32,10 +35,71 @@ class _MessagesState extends State<Messages> {
         child: Column(
           children: [
             Expanded(
+              child: FutureBuilder<List<Message>>(
+                future: Provider.of<MessageProvider>(context, listen: false).getMessageList(context),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text("Loading..."),
+                    );
+                  } else {
+                    return ListView.separated(
+                      itemCount: snapshot.data.length,
+                      separatorBuilder: (BuildContext context, int index) => const Divider(
+                        thickness: 1,
+                        height: 1,
+                        color: Color.fromARGB(255, 204, 204, 204),
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "File Name",
+                                        style: TextStyle(color: Colors.black, fontSize: 10),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '',
+                                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5),
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                                      child: const Icon(Icons.download),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+            Expanded(
                 child: ListView.separated(
               itemCount: 10,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text('Message $index'),
@@ -51,9 +115,7 @@ class _MessagesState extends State<Messages> {
                   margin: const EdgeInsets.all(5),
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(
-                      color: apppurple,
-                      borderRadius: BorderRadius.circular(12)),
+                  decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
                   child: const Icon(Icons.attach_file),
                 ),
                 Expanded(
@@ -61,8 +123,7 @@ class _MessagesState extends State<Messages> {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 1.0),
+                        borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 1.0),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -77,9 +138,7 @@ class _MessagesState extends State<Messages> {
                   margin: const EdgeInsets.all(5),
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(
-                      color: apppurple,
-                      borderRadius: BorderRadius.circular(12)),
+                  decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
                   child: const Icon(Icons.send),
                 ),
               ],
