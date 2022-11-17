@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -22,28 +20,32 @@ class FileProvider extends ChangeNotifier {
 
     try {
       final response = await http.get(
-        Uri.parse('$URL/file/'),
+        Uri.parse('$URL/file'),
         headers: {
           'x-auth-token': userToken,
           'Accept': 'application/json',
         },
       );
-      if (response.statusCode == 200) {
-        final body = jsonDecode(response.body);
-        final data = body['result'] as List;
-        if (fileList.isNotEmpty) {
-          return fileList;
-        } else {
-          for (Map<String, dynamic> item in data) {
-            var files = FilesModel.fromJson(item);
-            fileList.add(files);
+      switch (response.statusCode) {
+        case 200:
+          final json = jsonDecode(response.body);
+          if (json['status'] == 'success') {
+            fileList = [];
+            for (var i = 0; i < json['result'].length; i++) {
+              fileList.add(FilesModel.fromJson(json['result'][i]));
+            }
+            return fileList;
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(errorSnackBar(Constants.jasonResponseError));
           }
-          return fileList;
-        }
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(errorSnackBar(Constants.jasonResponseError));
-        return fileList;
+          notifyListeners();
+          break;
+        default:
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(Constants.jasonResponseError));
+          notifyListeners();
+          break;
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(e.toString()));
@@ -51,7 +53,7 @@ class FileProvider extends ChangeNotifier {
   }
 
   static Future<dynamic> saveFile(
-    File file,
+    file,
   ) async {
     String userToken = await SharedPref.readString('userToken');
     try {
@@ -61,14 +63,17 @@ class FileProvider extends ChangeNotifier {
       );
       request.headers['x-auth-token'] = userToken;
       request.headers['Content-Type'] = 'multipart/form-data';
-      request.files.add(http.MultipartFile(
-          'picture',
-          File(file.path).readAsBytes().asStream(),
-          File(file.path).lengthSync(),
-          filename: file.path.split("/").last));
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          "file",
+          file.path.toString(),
+        ),
+      );
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       print(response.body);
-    } catch (e) {}
+    } catch (e) {
+      print("error");
+    }
   }
 }

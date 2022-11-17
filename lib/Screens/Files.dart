@@ -24,7 +24,6 @@ class _FilesState extends State<Files> {
   Future<List<FilesModel>> fileList;
   @override
   void initState() {
-    fileList = context.read<FileProvider>().getFileList(context);
     super.initState();
   }
 
@@ -50,7 +49,8 @@ class _FilesState extends State<Files> {
           children: [
             Expanded(
               child: FutureBuilder<List<FilesModel>>(
-                future: fileList,
+                future: Provider.of<FileProvider>(context, listen: true)
+                    .getFileList(context),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
