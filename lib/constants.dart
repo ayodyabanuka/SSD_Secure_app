@@ -1,6 +1,6 @@
 class Constants {
 // Message Constants
-  static const String fieldEmpty = "Please fill this field to continue";
+  static const String fieldEmpty = "Please fill all fields to continue";
   static const String connectionError = "Please check your network connection and try again.";
   static const String timeout = "Timeout";
   static const String serverError = "Internal server error.";

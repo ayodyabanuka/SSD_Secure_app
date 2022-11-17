@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ssd_secure_app/Providers/AuthProvider.dart';
-import 'package:ssd_secure_app/Screens/Home.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Widgets/CustomAppbar.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
+import 'package:ssd_secure_app/Widgets/snack_bar.dart';
+import 'package:ssd_secure_app/constants.dart';
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -61,43 +62,10 @@ class _LoginState extends State<Login> {
           ),
           CustomButton(
             function: () {
-              if (username.value.text.isNotEmpty && password.value.text.isNotEmpty) {
-                if (username.text == "admin") {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(
-                                admin: true,
-                                worker: false,
-                                manager: false,
-                              )),
-                      (route) => false);
-                }
-                if (username.text == "worker") {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(
-                                admin: false,
-                                worker: true,
-                                manager: false,
-                              )),
-                      (route) => false);
-                }
-                if (username.text == "manager") {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(
-                                admin: false,
-                                worker: false,
-                                manager: true,
-                              )),
-                      (route) => false);
-                }
-                ;
+              if (email.value.text.isNotEmpty && password.value.text.isNotEmpty) {
+                Provider.of<AuthProvider>(context, listen: false).userLogin(context, email.value.text, password.value.text);
               } else {
-                null;
+                ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
               }
             },
             text: "Next",

@@ -1,10 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssd_secure_app/Models/UserModel.dart';
 import 'package:ssd_secure_app/Widgets/snack_bar.dart';
+import 'package:ssd_secure_app/constants.dart';
 import 'package:ssd_secure_app/sharedPrefs.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -24,44 +26,56 @@ class AuthProvider extends ChangeNotifier {
     try {
       print(body);
       final response = await http.post(
-        Uri.parse('https://ssd-mobile-application.herokuapp.com/api/user/login'),
+        Uri.parse('$URL/user/login'),
         body: jsonEncode(body),
         headers: {
           'Content-Type': 'application/json',
         },
       );
-      print(response.body);
       switch (response.statusCode) {
         case 200:
+          final json = jsonDecode(response.body);
+          if (json['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfulCompleted));
+            SharedPref.saveString('userToken', json['token']);
+            await userAuth(context);
+            Navigator.pushNamed(context, '/HomeScreen');
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.loginError));
+          }
           notifyListeners();
           break;
         default:
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(e));
+      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(e.toString()));
     }
   }
 
   Future<void> userAuth(
     BuildContext context,
   ) async {
+    String userToken = await SharedPref.readString('userToken');
     try {
       final response = await http.post(
         Uri.parse('$URL/user/auth'),
         headers: {
-          'x-auth-token': '',
+          'x-auth-token': userToken,
+          'Accept': 'application/json',
         },
       );
       switch (response.statusCode) {
         case 200:
           final data = jsonDecode(response.body);
           user = User.fromJson(data['result']);
-          SharedPref.save('User', user);
+          SharedPref.saveObject('User', user);
           notifyListeners();
           break;
         default:
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
@@ -76,12 +90,16 @@ class AuthProvider extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$URL/user'),
+        headers: {
+          'Accept': 'application/json',
+        },
       );
       switch (response.statusCode) {
         case 200:
           notifyListeners();
           break;
         default:
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
@@ -107,12 +125,16 @@ class AuthProvider extends ChangeNotifier {
       final response = await http.post(
         Uri.parse('$URL/user/auth'),
         body: jsonEncode(body),
+        headers: {
+          'Accept': 'application/json',
+        },
       );
       switch (response.statusCode) {
         case 200:
           notifyListeners();
           break;
         default:
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
@@ -128,6 +150,7 @@ class AuthProvider extends ChangeNotifier {
     String password,
     String type,
   ) async {
+    String userToken = await SharedPref.readString('userToken');
     Map<String, dynamic> body = {
       "username": username,
       "email": email,
@@ -139,7 +162,8 @@ class AuthProvider extends ChangeNotifier {
         Uri.parse('$URL/user'),
         body: jsonEncode(body),
         headers: {
-          'x-auth-token': '',
+          'x-auth-token': userToken,
+          'Accept': 'application/json',
         },
       );
       switch (response.statusCode) {
@@ -147,6 +171,7 @@ class AuthProvider extends ChangeNotifier {
           notifyListeners();
           break;
         default:
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
