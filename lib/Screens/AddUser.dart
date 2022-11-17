@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ssd_secure_app/Providers/AuthProvider.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
-import 'package:ssd_secure_app/Utils/textSize.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
 import 'package:ssd_secure_app/Widgets/snack_bar.dart';
