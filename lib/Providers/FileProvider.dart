@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -36,14 +38,12 @@ class FileProvider extends ChangeNotifier {
             }
             return fileList;
           } else {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(errorSnackBar(Constants.jasonResponseError));
+            ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           }
           notifyListeners();
           break;
         default:
-          ScaffoldMessenger.of(context)
-              .showSnackBar(errorSnackBar(Constants.jasonResponseError));
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           notifyListeners();
           break;
       }
@@ -71,9 +71,6 @@ class FileProvider extends ChangeNotifier {
       );
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      print(response.body);
-    } catch (e) {
-      print("error");
-    }
+    } catch (e) {}
   }
 }

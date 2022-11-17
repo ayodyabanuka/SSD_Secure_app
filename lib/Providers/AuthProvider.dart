@@ -114,6 +114,7 @@ class AuthProvider extends ChangeNotifier {
     String password,
     String type,
   ) async {
+    String userToken = await SharedPref.readString('userToken');
     Map<String, dynamic> body = {
       "username": username,
       "email": email,
@@ -122,14 +123,16 @@ class AuthProvider extends ChangeNotifier {
     };
     try {
       final response = await http.post(
-        Uri.parse('$URL/user/auth'),
+        Uri.parse('$URL/user'),
         body: jsonEncode(body),
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
       );
       switch (response.statusCode) {
         case 200:
+          Navigator.pushNamedAndRemoveUntil(context, '/HomeScreen', (Route<dynamic> route) => false);
+          ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfulCreate));
           notifyListeners();
           break;
         default:

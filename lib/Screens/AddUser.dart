@@ -1,9 +1,13 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ssd_secure_app/Providers/AuthProvider.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Utils/textSize.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
+import 'package:ssd_secure_app/Widgets/snack_bar.dart';
+import 'package:ssd_secure_app/constants.dart';
 
 class AddUser extends StatefulWidget {
   const AddUser({Key key}) : super(key: key);
@@ -13,56 +17,45 @@ class AddUser extends StatefulWidget {
 }
 
 const List<String> worker = <String>[
-  'Worker',
-  'Manager',
+  'worker',
+  'manager',
 ];
 
 class _AddUserState extends State<AddUser> {
-  TextEditingController firstName = TextEditingController();
-  TextEditingController secondName = TextEditingController();
+  TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
-  TextEditingController adderss = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController postCode = TextEditingController();
   TextEditingController password = TextEditingController();
+  String dropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    dropdownValue = worker.first;
+  }
 
   @override
   Widget build(BuildContext context) {
-    String dropdownValue = worker.first;
     return Scaffold(
       backgroundColor: bcColor,
       appBar: AppBar(
-        toolbarHeight: 110,
-        backgroundColor: bcColor,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
-        title: const Text(
-          "Register Staff",
-          style: TitleStyle,
-        ),
         elevation: 0,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        backgroundColor: bcColor,
+        title: const Text(
+          "Create User",
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 50),
             Customtextfield(
               isPassword: false,
-              lable: "First Name",
-              controller: firstName,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "Second Name",
-              controller: secondName,
+              lable: "Username",
+              controller: username,
             ),
             const SizedBox(
               height: 20,
@@ -71,30 +64,6 @@ class _AddUserState extends State<AddUser> {
               isPassword: false,
               lable: "Email",
               controller: email,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "Address",
-              controller: adderss,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "City",
-              controller: city,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Customtextfield(
-              isPassword: false,
-              lable: "Post Code",
-              controller: postCode,
             ),
             const SizedBox(
               height: 20,
@@ -203,7 +172,13 @@ class _AddUserState extends State<AddUser> {
               height: 30,
             ),
             CustomButton(
-              function: () {},
+              function: () {
+                if (username.text.isNotEmpty || email.text.isNotEmpty || password.text.isNotEmpty) {
+                  Provider.of<AuthProvider>(context, listen: false).createUser(context, username.text, email.text, password.text, dropdownValue);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
+                }
+              },
               text: "Register",
             )
           ],
