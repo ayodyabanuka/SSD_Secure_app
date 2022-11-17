@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ssd_secure_app/Models/FileModel.dart';
@@ -40,7 +41,8 @@ class FileProvider extends ChangeNotifier {
           return fileList;
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(errorSnackBar(Constants.jasonResponseError));
         return fileList;
       }
     } catch (e) {
@@ -49,23 +51,24 @@ class FileProvider extends ChangeNotifier {
   }
 
   static Future<dynamic> saveFile(
-    file,
+    File file,
   ) async {
     String userToken = await SharedPref.readString('userToken');
     try {
       final request = await http.MultipartRequest(
         'POST',
-        Uri.parse(''),
+        Uri.parse('https://ssd-mobile-application.herokuapp.com/api/file'),
       );
       request.headers['x-auth-token'] = userToken;
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          file.path.split('/').last,
-          file.path.toString(),
-        ),
-      );
+      request.headers['Content-Type'] = 'multipart/form-data';
+      request.files.add(http.MultipartFile(
+          'picture',
+          File(file.path).readAsBytes().asStream(),
+          File(file.path).lengthSync(),
+          filename: file.path.split("/").last));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
+      print(response.body);
     } catch (e) {}
   }
 }

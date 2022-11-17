@@ -64,10 +64,13 @@ class _LoginState extends State<Login> {
           ),
           CustomButton(
             function: () {
-              if (email.value.text.isNotEmpty && password.value.text.isNotEmpty) {
-                Provider.of<AuthProvider>(context, listen: false).userLogin(context, email.value.text, password.value.text);
+              if (email.value.text.isNotEmpty &&
+                  password.value.text.isNotEmpty) {
+                Provider.of<AuthProvider>(context, listen: false)
+                    .userLogin(context, email.value.text, password.value.text);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(errorSnackBar(Constants.fieldEmpty));
               }
             },
             text: "Next",

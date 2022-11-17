@@ -1,11 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:ssd_secure_app/Models/FileModel.dart';
@@ -62,7 +59,8 @@ class _FilesState extends State<Files> {
                   } else {
                     return ListView.separated(
                       itemCount: snapshot.data.length,
-                      separatorBuilder: (BuildContext context, int index) => const Divider(
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(
                         thickness: 1,
                         height: 1,
                         color: Color.fromARGB(255, 204, 204, 204),
@@ -74,33 +72,41 @@ class _FilesState extends State<Files> {
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         "File Name",
-                                        style: TextStyle(color: Colors.black, fontSize: 10),
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 10),
                                       ),
                                       const SizedBox(
                                         height: 5,
                                       ),
                                       Text(
                                         snapshot.data[index].filename,
-                                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 14),
                                       ),
                                     ],
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      downloadFile(snapshot.data[index].filename);
+                                      downloadFile(
+                                          snapshot.data[index].filename);
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.all(5),
                                       width: 40,
                                       height: 40,
-                                      decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                                      decoration: BoxDecoration(
+                                          color: apppurple,
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
                                       child: const Icon(Icons.download),
                                     ),
                                   ),
@@ -121,26 +127,43 @@ class _FilesState extends State<Files> {
             Row(
               children: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    selectImage();
+                  },
                   child: Container(
                     margin: const EdgeInsets.all(5),
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(
+                        color: apppurple,
+                        borderRadius: BorderRadius.circular(12)),
                     child: const Icon(Icons.attach_file),
                   ),
                 ),
                 const SizedBox(
                   width: 20,
                 ),
-                const Expanded(child: Text("Select image file")),
+                Expanded(
+                  child: Text(selectedFile == null
+                      ? "Select image file"
+                      : selectedFile.path.split("/").last),
+                ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      selectedFile == null
+                          ? null
+                          : FileProvider.saveFile(selectedFile);
+                      selectedFile = null;
+                    });
+                  },
                   child: Container(
                     margin: const EdgeInsets.all(5),
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(
+                        color: apppurple,
+                        borderRadius: BorderRadius.circular(12)),
                     child: const Icon(Icons.send),
                   ),
                 ),
@@ -165,29 +188,36 @@ class _FilesState extends State<Files> {
         String savePath = dir.path + "/$savename";
 
         try {
-          await Dio().download("https://ssd-mobile-application.herokuapp.com/api/files/$filename", savePath, onReceiveProgress: (received, total) {
-            if (total != -1) {}
+          await Dio().download(
+              "https://ssd-mobile-application.herokuapp.com/api/files/$filename",
+              savePath, onReceiveProgress: (received, total) {
+            if (total != -1) {
+              print((received / total * 100).toStringAsFixed(0) + "%");
+              //you can build progressbar feature too
+            }
           });
-          ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfuldownload));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(successSnackBar(Constants.successfuldownload));
+          print("File is saved to download folder.");
         } on DioError catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
+          print(e.message);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(Constants.jasonResponseError));
         }
       }
     } else {}
   }
 
   selectImage() async {
-    PickedFile pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
+    FilePickerResult result = await FilePicker.platform.pickFiles();
 
+    if (result != null) {
+      File file = File(result.files.single.path);
       setState(() {
-        selectedFile = imageFile;
+        selectedFile = file;
       });
+    } else {
+      // User canceled the picker
     }
   }
 }
