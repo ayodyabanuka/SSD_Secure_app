@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:ssd_secure_app/Screens/AddUser.dart';
 import 'package:ssd_secure_app/Screens/Files.dart';
@@ -66,8 +64,7 @@ class _HomeState extends State<Home> {
                   text: "Create Account",
                   icon: Icons.account_box,
                   function: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddUser()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddUser()));
                   },
                 ),
                 const SizedBox(

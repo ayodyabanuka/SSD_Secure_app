@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ssd_secure_app/Providers/AuthProvider.dart';
 import 'package:ssd_secure_app/Screens/Home.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Widgets/CustomAppbar.dart';
@@ -6,7 +8,7 @@ import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key}) : super(key: key);
+  const Login({Key key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -53,16 +55,14 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 20,
                 ),
-                Customtextfield(
-                    lable: "Password", controller: password, isPassword: true)
+                Customtextfield(lable: "Password", controller: password, isPassword: true)
               ],
             ),
           ),
           CustomButton(
             function: () {
-              if (email.value.text.isNotEmpty &&
-                  password.value.text.isNotEmpty) {
-                if (email.text == "admin") {
+              if (username.value.text.isNotEmpty && password.value.text.isNotEmpty) {
+                if (username.text == "admin") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -73,7 +73,7 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
-                if (email.text == "worker") {
+                if (username.text == "worker") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
-                if (email.text == "manager") {
+                if (username.text == "manager") {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -95,6 +95,7 @@ class _LoginState extends State<Login> {
                               )),
                       (route) => false);
                 }
+                ;
               } else {
                 null;
               }

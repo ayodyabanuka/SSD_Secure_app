@@ -2,12 +2,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
 import 'package:ssd_secure_app/Utils/textSize.dart';
-import 'package:ssd_secure_app/Widgets/CustomAppbar.dart';
 import 'package:ssd_secure_app/Widgets/CustomButton.dart';
 import 'package:ssd_secure_app/Widgets/CustomTextField.dart';
 
 class AddUser extends StatefulWidget {
-  AddUser({Key key}) : super(key: key);
+  const AddUser({Key key}) : super(key: key);
 
   @override
   State<AddUser> createState() => _AddUserState();
