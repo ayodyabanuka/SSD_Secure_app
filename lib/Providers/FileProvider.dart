@@ -27,9 +27,7 @@ class FileProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        print(body);
         final data = body['result'] as List;
-        print(data);
 
         if (fileList.isNotEmpty) {
           return fileList;
@@ -41,8 +39,7 @@ class FileProvider extends ChangeNotifier {
           return fileList;
         }
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(errorSnackBar(Constants.jasonResponseError));
+        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
         return fileList;
       }
     } catch (e) {

@@ -24,7 +24,6 @@ class AuthProvider extends ChangeNotifier {
       "password": password,
     };
     try {
-      print(body);
       final response = await http.post(
         Uri.parse('$URL/user/login'),
         body: jsonEncode(body),
@@ -39,7 +38,7 @@ class AuthProvider extends ChangeNotifier {
             ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfulCompleted));
             SharedPref.saveString('userToken', json['token']);
             await userAuth(context);
-            Navigator.pushNamed(context, '/HomeScreen');
+            Navigator.pushNamedAndRemoveUntil(context, '/HomeScreen', (Route<dynamic> route) => false);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.loginError));
           }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -161,26 +163,17 @@ class _FilesState extends State<Files> {
       if (dir != null) {
         String savename = filename;
         String savePath = dir.path + "/$savename";
-        print(savePath);
-        //output:  /storage/emulated/0/Download/banner.png
 
         try {
           await Dio().download("https://ssd-mobile-application.herokuapp.com/api/files/$filename", savePath, onReceiveProgress: (received, total) {
-            if (total != -1) {
-              print((received / total * 100).toStringAsFixed(0) + "%");
-              //you can build progressbar feature too
-            }
+            if (total != -1) {}
           });
           ScaffoldMessenger.of(context).showSnackBar(successSnackBar(Constants.successfuldownload));
-          print("File is saved to download folder.");
         } on DioError catch (e) {
-          print(e.message);
           ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
         }
       }
-    } else {
-      print("No permission to read and write.");
-    }
+    } else {}
   }
 
   selectImage() async {

@@ -28,7 +28,7 @@ class MessageProvider extends ChangeNotifier {
         body: jsonEncode(body),
         headers: {
           'x-auth-token': userToken,
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
       );
       switch (response.statusCode) {
@@ -51,7 +51,7 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getMessageList(
+  Future<List<Message>> getMessageList(
     BuildContext context,
   ) async {
     String userToken = await SharedPref.readString('userToken');
@@ -67,9 +67,11 @@ class MessageProvider extends ChangeNotifier {
         case 200:
           final json = jsonDecode(response.body);
           if (json['status'] == 'success') {
+            messageList = [];
             for (var i = 0; i < json['result'].length; i++) {
               messageList.add(Message.fromJson(json['result'][i]));
             }
+            return messageList;
           } else {
             ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.jasonResponseError));
           }
@@ -95,7 +97,6 @@ class MessageProvider extends ChangeNotifier {
         Uri.parse('$URL/message/$messageID'),
         headers: {
           'x-auth-token': userToken,
-          'Accept': 'application/json',
         },
       );
       switch (response.statusCode) {

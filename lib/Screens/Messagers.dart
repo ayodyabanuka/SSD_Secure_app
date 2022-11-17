@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:ssd_secure_app/Models/MessageModel.dart';
 import 'package:ssd_secure_app/Providers/MessageProvider.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
+import 'package:ssd_secure_app/Widgets/snack_bar.dart';
+import 'package:ssd_secure_app/constants.dart';
 
 class Messages extends StatefulWidget {
   Messages({Key key}) : super(key: key);
@@ -36,7 +38,7 @@ class _MessagesState extends State<Messages> {
           children: [
             Expanded(
               child: FutureBuilder<List<Message>>(
-                future: Provider.of<MessageProvider>(context, listen: false).getMessageList(context),
+                future: Provider.of<MessageProvider>(context, listen: true).getMessageList(context),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
@@ -50,74 +52,42 @@ class _MessagesState extends State<Messages> {
                         height: 1,
                         color: Color.fromARGB(255, 204, 204, 204),
                       ),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                      itemBuilder: (BuildContext context, int index) => Dismissible(
+                        key: UniqueKey(),
+                        onDismissed: (direction) {
+                          Provider.of<MessageProvider>(context, listen: false).deleteMessage(context, snapshot.data[index].id);
+                        },
+                        direction: DismissDirection.endToStart,
+                        background: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                        child: GestureDetector(
                           child: Column(
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "File Name",
-                                        style: TextStyle(color: Colors.black, fontSize: 10),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '',
-                                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: Container(
-                                      margin: const EdgeInsets.all(5),
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
-                                      child: const Icon(Icons.download),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  snapshot.data[index].message,
+                                  style: const TextStyle(color: Colors.black, fontSize: 15),
+                                ),
+                              )
                             ],
                           ),
-                        );
-                      },
+                        ),
+                      ),
                     );
                   }
                 },
               ),
             ),
-            Expanded(
-                child: ListView.separated(
-              itemCount: 10,
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text('Message $index'),
-                );
-              },
-            )),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.all(5),
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.attach_file),
-                ),
                 Expanded(
                   child: TextFormField(
                     decoration: InputDecoration(
@@ -134,12 +104,21 @@ class _MessagesState extends State<Messages> {
                     controller: addtext,
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.all(5),
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.send),
+                InkWell(
+                  child: Container(
+                    margin: const EdgeInsets.all(5),
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(color: apppurple, borderRadius: BorderRadius.circular(12)),
+                    child: const Icon(Icons.send),
+                  ),
+                  onTap: () {
+                    if (addtext.text.isNotEmpty) {
+                      Provider.of<MessageProvider>(context, listen: false).createMessage(context, addtext.text);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
+                    }
+                  },
                 ),
               ],
             )
