@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ssd_secure_app/Models/UserModel.dart';
 import 'package:ssd_secure_app/Screens/AddUser.dart';
 import 'package:ssd_secure_app/Screens/Files.dart';
+import 'package:ssd_secure_app/Screens/Login.dart';
 import 'package:ssd_secure_app/Screens/Messagers.dart';
 import 'package:ssd_secure_app/Screens/Profile.dart';
 import 'package:ssd_secure_app/Utils/appcolors.dart';
@@ -39,8 +41,17 @@ class _HomeState extends State<Home> {
       resizeToAvoidBottomInset: false,
       backgroundColor: bcColor,
       appBar: AppBar(
-        backgroundColor: apppurple,
-        toolbarHeight: 0,
+        backgroundColor: bcColor,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Logout();
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
+              ))
+        ],
         elevation: 0,
       ),
       body: Column(
@@ -59,7 +70,8 @@ class _HomeState extends State<Home> {
                   text: "Messages",
                   icon: Icons.message,
                   function: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Messages()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Messages()));
                   },
                 ),
                 const SizedBox(height: 20),
@@ -69,7 +81,8 @@ class _HomeState extends State<Home> {
                         text: "Files",
                         icon: Icons.file_copy,
                         function: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Files()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Files()));
                         },
                       ),
                 const SizedBox(height: 20),
@@ -80,7 +93,10 @@ class _HomeState extends State<Home> {
                             text: "Create Account",
                             icon: Icons.account_box,
                             function: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddUser()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AddUser()));
                             },
                           ),
                           const SizedBox(height: 20),
@@ -91,7 +107,8 @@ class _HomeState extends State<Home> {
                   text: "Profile",
                   icon: Icons.person,
                   function: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile()));
                   },
                 )
               ],
@@ -100,5 +117,12 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  Logout() async {
+    SharedPref.remove('userToken');
+    SharedPref.remove('User');
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => Login()), (route) => false);
   }
 }
