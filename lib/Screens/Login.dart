@@ -59,7 +59,6 @@ class _LoginState extends State<Login> {
                   controller: password,
                   isPassword: true,
                 ),
-                Customtextfield(lable: "Password", controller: password, isPassword: true)
               ],
             ),
           ),
