@@ -163,13 +163,13 @@ class AuthProvider extends ChangeNotifier {
         body: jsonEncode(body),
         headers: {
           'x-auth-token': userToken,
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
       );
       switch (response.statusCode) {
         case 200:
           userAuth(context);
-          Navigator.pushNamedAndRemoveUntil(context, "/ProfileScreen", (Route<dynamic> route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, "/HomeScreen", (Route<dynamic> route) => false);
           notifyListeners();
           break;
         default:

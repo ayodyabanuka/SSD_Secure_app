@@ -78,7 +78,7 @@ class _EditProfileState extends State<EditProfile> {
             const SizedBox(height: 30),
             CustomButton(
               function: () {
-                if (username.text.isEmpty || email.text.isEmpty || password.text.isEmpty) {
+                if (username.text.isNotEmpty || email.text.isNotEmpty || password.text.isNotEmpty) {
                   Provider.of<AuthProvider>(context, listen: false).updateUser(context, username.text, email.text, password.text);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(Constants.fieldEmpty));
