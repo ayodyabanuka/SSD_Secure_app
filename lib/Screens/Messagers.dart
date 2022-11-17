@@ -70,7 +70,7 @@ class _MessagesState extends State<Messages> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.symmetric(vertical: 20),
                                 child: Text(
                                   snapshot.data[index].message,
                                   style: const TextStyle(color: Colors.black, fontSize: 15),

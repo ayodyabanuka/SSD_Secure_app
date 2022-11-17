@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -28,7 +30,6 @@ class FileProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         final data = body['result'] as List;
-
         if (fileList.isNotEmpty) {
           return fileList;
         } else {
@@ -47,5 +48,24 @@ class FileProvider extends ChangeNotifier {
     }
   }
 
-  SaveFile() async {}
+  static Future<dynamic> saveFile(
+    file,
+  ) async {
+    String userToken = await SharedPref.readString('userToken');
+    try {
+      final request = await http.MultipartRequest(
+        'POST',
+        Uri.parse(''),
+      );
+      request.headers['x-auth-token'] = userToken;
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          file.path.split('/').last,
+          file.path.toString(),
+        ),
+      );
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+    } catch (e) {}
+  }
 }
